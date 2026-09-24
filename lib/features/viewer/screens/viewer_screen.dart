@@ -9,6 +9,8 @@ import '../../../core/theme/app_theme.dart';
 import '../providers/viewer_provider.dart';
 import '../widgets/viewer_toolbar.dart';
 import '../widgets/thumbnail_strip.dart';
+import 'package:go_router/go_router.dart';
+import '../../metadata/widgets/metadata_drawer.dart';
 
 /// Full-screen image viewer with zoom, pan, and navigation.
 class ViewerScreen extends ConsumerStatefulWidget {
@@ -28,6 +30,7 @@ class ViewerScreen extends ConsumerStatefulWidget {
 }
 
 class _ViewerScreenState extends ConsumerState<ViewerScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late PageController _pageController;
   bool _showUi = true;
   bool _isFullscreen = false;
@@ -73,7 +76,11 @@ class _ViewerScreenState extends ConsumerState<ViewerScreen> {
       focusNode: FocusNode()..requestFocus(),
       onKeyEvent: _handleKey,
       child: Scaffold(
+        key: _scaffoldKey,
         backgroundColor: ApertixColors.darkBackground,
+        endDrawer: state.valueOrNull?.currentPath != null
+            ? MetadataDrawer(filePath: state.valueOrNull!.currentPath!)
+            : null,
         body: state.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (err, _) => Center(
@@ -134,6 +141,7 @@ class _ViewerScreenState extends ConsumerState<ViewerScreen> {
                   onNavigateNext: () => _navigate(1),
                   onToggleFullscreen: _toggleFullscreen,
                   isFullscreen: _isFullscreen,
+                  onOpenMetadata: () => _scaffoldKey.currentState?.openEndDrawer(),
                 ),
               ),
 
@@ -197,6 +205,13 @@ class _ViewerScreenState extends ConsumerState<ViewerScreen> {
         _toggleFullscreen();
       case LogicalKeyboardKey.keyF:
         _toggleFullscreen();
+      case LogicalKeyboardKey.keyI:
+        _scaffoldKey.currentState?.openEndDrawer();
+      case LogicalKeyboardKey.keyE:
+        final current = ref.read(viewerProvider).valueOrNull?.currentPath;
+        if (current != null) {
+          context.push('/editor', extra: {'filePath': current});
+        }
     }
   }
 

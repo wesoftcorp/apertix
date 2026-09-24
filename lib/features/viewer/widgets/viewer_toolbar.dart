@@ -13,6 +13,7 @@ class ViewerToolbar extends StatelessWidget {
     required this.onNavigateNext,
     required this.onToggleFullscreen,
     required this.isFullscreen,
+    this.onOpenMetadata,
   });
 
   final ViewerState viewerState;
@@ -20,6 +21,7 @@ class ViewerToolbar extends StatelessWidget {
   final VoidCallback onNavigateNext;
   final VoidCallback onToggleFullscreen;
   final bool isFullscreen;
+  final VoidCallback? onOpenMetadata;
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +103,16 @@ class ViewerToolbar extends StatelessWidget {
               },
             ),
             const SizedBox(width: 8),
+
+            // Info / EXIF button
+            if (onOpenMetadata != null) ...[
+              _ToolbarButton(
+                icon: Icons.info_outline_rounded,
+                tooltip: 'Image Info & EXIF (I)',
+                onTap: onOpenMetadata!,
+              ),
+              const SizedBox(width: 8),
+            ],
 
             // Fullscreen toggle
             _ToolbarButton(
