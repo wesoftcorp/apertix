@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/viewer/screens/viewer_screen.dart';
 import '../../features/gallery/screens/gallery_screen.dart';
 import '../../features/settings/screens/settings_screen.dart';
+import '../../features/editor/screens/editor_screen.dart';
 
 /// GoRouter provider — referencing it in ConsumerWidget ensures proper lifecycle.
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -32,6 +33,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             fileList: fileList,
             initialIndex: index,
           );
+        },
+      ),
+
+      // Editor — full-featured canvas editor
+      GoRoute(
+        path: '/editor',
+        name: 'editor',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final filePath = extra?['filePath'] as String? ?? '';
+          return EditorScreen(filePath: filePath);
         },
       ),
 

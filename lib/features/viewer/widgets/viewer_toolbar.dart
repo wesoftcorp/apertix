@@ -89,6 +89,19 @@ class ViewerToolbar extends StatelessWidget {
             ),
             const SizedBox(width: 8),
 
+            // Edit button
+            _ToolbarButton(
+              icon: Icons.tune_rounded,
+              tooltip: 'Edit Image (E)',
+              onTap: () {
+                final current = viewerState.currentPath;
+                if (current != null) {
+                  context.push('/editor', extra: {'filePath': current});
+                }
+              },
+            ),
+            const SizedBox(width: 8),
+
             // Fullscreen toggle
             _ToolbarButton(
               icon: isFullscreen
